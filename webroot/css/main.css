@@ -1,0 +1,38 @@
+#home .card img {
+    width: 100%;
+    min-height: 10em;
+    height: 35vw;
+    object-fit: cover;
+}
+
+ul.horizontal-list {
+    list-style: none;
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+}
+
+ul.horizontal-list li {
+    display: inline-block;
+    padding: 0 0.5rem;
+}
+
+ul.horizontal-list li:not(:last-child) {
+    border-right: 1px solid black;
+}
+
+#no-results-container {
+    display: none;
+}
+
+@media screen and (min-width: 768px) {
+    #home .card img {
+        height: 17.5vw;
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    #home .card img {
+        height: 10em;
+    }
+}
