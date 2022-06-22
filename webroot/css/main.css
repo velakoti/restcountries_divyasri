@@ -1,3 +1,28 @@
+#fixed-header {
+    position: fixed;
+    width: 100%;
+    background-color: white;
+    z-index: 9;
+    top: 0;
+    background-color: #f1f1f1;
+}
+
+#fixed-header-body {
+    margin-top: 230px;
+}
+
+#myBtn {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    z-index: 99;
+    font-size: 18px;
+    border: none;
+    outline: none;
+    padding: 15px;
+}
+
 #home .card img {
     width: 100%;
     min-height: 10em;
@@ -24,6 +49,29 @@ ul.horizontal-list li:not(:last-child) {
 #no-results-container {
     display: none;
 }
+
+.country-container .card {
+    box-shadow: 0 1px 2px #aaa;
+    transition: transform 0.2s ease;
+}
+
+.country-container .card:hover {
+    box-shadow: 0 10px 16px #aaa;
+    transform: scale(1.1);
+}
+
+.page {
+    display: none;
+}
+
+.page-active {
+    display: flex;
+}
+
+.searching {
+    display: flex !important;
+}
+
 
 @media screen and (min-width: 768px) {
     #home .card img {

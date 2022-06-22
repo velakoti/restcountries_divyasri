@@ -1,6 +1,14 @@
 <?php
  $url = file_get_contents('https://restcountries.com/v3.1/all');
  $toPhp = json_decode($url, true);
+
+ function sortByName($a, $b) {
+  return $a['name'] > $b['name'];
+}
+
+usort($toPhp, 'sortByName'); 
+
+
  ?>
  
 <!doctype html>
@@ -19,43 +27,52 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-dark bg-dark shadow">
-    <div class="container-fluid px-5">
-      <a class="navbar-brand" href="#">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Marvel_Logo.svg" alt="" height="35"
-          style="margin: -6px 0;" class="d-inline-block align-text-top">
-        <span class="fw-bold fs-3">Earth-616 </span> <span class="fs-6"> : Countries list</span>
-      </a>
+  <div id="fixed-header" class="shadow-sm">
+    <nav class="navbar navbar-dark bg-dark shadow">
+      <div class="container-fluid px-5">
+        <a class="navbar-brand" href="">
+          <span class="fw-bold fs-3">Rest Countries</span> <span class="fs-6"> Search</span>
+        </a>
+      </div>
+    </nav>
+    <div class="container mt-5">
+      <div class="row  justify-content-center">
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="basic-addon2"><i class="fa-solid fa-magnifying-glass"></i></span>
+          <input id="tableSearch" type="text" class="form-control" placeholder="Enter Name or Country Code"
+            aria-label="Recipient's username" aria-describedby="basic-addon2">
+        </div>
+      </div>
+      <nav aria-label="Page navigation example" id="cards-pagination">
+        <ul id="pagination-demo" class="pagination justify-content-center">
+        </ul>
+      </nav>
     </div>
-  </nav>
+  </div>
 
-  <div class="container mt-5">
+  <button onclick="topFunction()" id="myBtn" class="btn btn-secondary"><i class="fa-solid fa-arrow-up"></i></button>
+
+  <div class="container" id="fixed-header-body">
     <br>
-    <!-- Nav tabs -->
-    <ul class="nav nav-pills nav-justified" role="tablist">
-      <li class="nav-item">
-        <a class="nav-link active" data-bs-toggle="tab" href="#home">Card View</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="tab" href="#menu1">Table View</a>
-      </li>
-    </ul>
     <!-- Tab panes -->
     <div class="tab-content">
-      <div id="home" class="container tab-pane active"><br>
-        <div class="container mt-5">
-          <div class="row  justify-content-center">
-            <div class="input-group mb-3">
-              <span class="input-group-text" id="basic-addon2"><i class="fa-solid fa-magnifying-glass"></i></span>
-              <input id="tableSearch" type="text" class="form-control" placeholder="Enter Name or Country Code"
-                aria-label="Recipient's username" aria-describedby="basic-addon2">
-            </div>
-          </div>
-          <div class="row justify-content-center" id="info-container">
+      <div id="home" class="container tab-pane active">
+        <div class="container">
+          
+          <div  id="info-container">
+          
           <?php
-            for( $i = 0; $i < count($toPhp); $i++) {
 
-              echo '<div class="country-container col-10 col-md-4 col-lg-3 exists"><div class="card my-4 shadow">';
+            $page = 0;
+            $pagenum = 1;
+            for( $i = 0; $i < count($toPhp); $i++) {
+              $page = $page + 1;
+              if($page == 1){                
+                echo '<div class="row justify-content-center page" id="page'.$pagenum.'">';
+                $pagenum = $pagenum + 1;
+              }
+
+              echo '<div class="country-container col-10 col-md-4 col-lg-3 exists"><div class="card my-4">';
 
               echo '<img src="'.$toPhp[$i]['flags']['svg'].'" class="card-img-top" alt="..." >';
 
@@ -117,6 +134,12 @@
               echo '</div>';
 
               echo ' </div></div></div>';
+
+              if($page == 50){                
+                echo '</div>';
+                $page = 0;
+              }
+
             }
           ?>
       </div>
@@ -128,74 +151,8 @@
     </div>
   </div>
 
-  <!-- Table view -->
 
-      <div id="menu1" class="container tab-pane fade pb-5 mb-5"><br><br>
-        <div class="card p-4 shadow">
-          <table id="countrydatatable" class="table table-striped" style="width:100%">
-            <thead>
-              <tr>
-                <th>Country Name</th>
-                <th>Capital</th>
-                <th>Region</th>
-                <th>Subregion</th>
-                <th>Languages</th>
-                <th>Population</th>
-                <th>Currencies</th>
-                <th>Alpha Code 2</th>
-                <th>Alpha Code 3</th>
-                <th>Flag</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php
-            for( $i = 0; $i < count($toPhp); $i++){
-                echo '<tr>';
-                echo '<td>'.$toPhp[$i]['name']['common'].'</td>';
-                echo '<td>';
-                if (is_countable($toPhp[$i]['capital']) && count($toPhp[$i]['capital']) > 0){                
-                    foreach ($toPhp[$i]['capital'] as $value) {
-                      echo "$value ";
-                    }
-                  } 
-                echo '</td>';
-                echo '<td>'.$toPhp[$i]['region'].'</td>';
-                echo '<td>'.$toPhp[$i]['subregion'].'</td>';
-                echo '<td><ul>';
-                if (is_countable($toPhp[$i]['languages']) && count($toPhp[$i]['languages']) > 0){                
-                    foreach ($toPhp[$i]['languages'] as $value) {
-                      echo "<li>$value</li>";
-                    }
-                  }  
-                echo '</ul></td>';
-                echo '<td>'.$toPhp[$i]['population'].'</td>';
-                echo '<td><ul>';
-                if (is_countable($toPhp[$i]['currencies']) && count($toPhp[$i]['currencies']) > 0){
-                    foreach ($toPhp[$i]['currencies'] as $value) {
-                      $z = 0;
-                      foreach ($value as $val) {
-                        $z = $z + 1;
-                        if($z % 2 == 0){
-                          echo $val.' </li> ';
-                        }
-                        else{
-                          echo '<li>'.$val.' ';
-                        }
-                        
-                      }
-                    }
-                }
-                echo '</ul></td>';
-                echo '<td>'.$toPhp[$i]['cca2'].'</td>';
-                echo '<td>'.$toPhp[$i]['cca3'].'</td>';
-                echo '<td><img src="'.$toPhp[$i]['flags']['svg'].'" class="card-img-top" alt="..." ></td>';
-                echo '</tr>';
-            }
-            ?>
-            </tbody>            
-          </table>
-        </div>
-      </div>
+      
     </div>
   </div>
 </div>
@@ -210,6 +167,7 @@
     crossorigin="anonymous"></script>
   <script src=https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js></script>
   <script src=https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>
   <script src="../js/app.js"></script>
 </body>
 
