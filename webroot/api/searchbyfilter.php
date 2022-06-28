@@ -30,48 +30,64 @@ $createfullnameurl ="";
 
 $createcodeurl ="";
 
-if( !(empty($_POST["searchCountry"])) ){
+if( !(empty($_POST["searchCountry"])) && !(empty($_POST["searchfilter"]))){
 
   $createnameurl ="https://restcountries.com/v3.1/name/".$_POST["searchCountry"];
 
   $createfullnameurl ="https://restcountries.com/v3.1/name/".$_POST["searchCountry"]."?fullText=true";
 
-  $createcodeurl ="https://restcountries.com/v3.1/alpha/".$_POST["searchCountry"];;
+  $createcodeurl ="https://restcountries.com/v3.1/alpha/".$_POST["searchCountry"]; 
 
-  if (!(is_null(json_decode(file_get_contents($createcodeurl, false, stream_context_create($arrContextOptions)))))) {
+  if($_POST["searchfilter"] == 'name'){
 
-    $createurl ="";
+    if (!(is_null(json_decode(file_get_contents($createfullnameurl, false, stream_context_create($arrContextOptions)))))) {
 
-    $toPhp = json_decode(file_get_contents($createcodeurl, false, stream_context_create($arrContextOptions)), true);
+      $createurl =" full name";
 
-    usort($toPhp, 'sortBypopulation');
+      $url = file_get_contents($createfullnameurl, false, stream_context_create($arrContextOptions));
 
-  } elseif (!(is_null(json_decode(file_get_contents($createfullnameurl, false, stream_context_create($arrContextOptions)))))) {
+      $toPhp = json_decode($url, true);
 
-    $createurl =" full name";
+      usort($toPhp, 'sortBypopulation');
 
-    $url = file_get_contents($createfullnameurl, false, stream_context_create($arrContextOptions));
+    } elseif  (!(is_null(json_decode(file_get_contents($createnameurl, false, stream_context_create($arrContextOptions)))))) {
 
-    $toPhp = json_decode($url, true);
+      $createurl =" name";
 
-    usort($toPhp, 'sortBypopulation');
+      $toPhp = json_decode(file_get_contents($createnameurl, false, stream_context_create($arrContextOptions)), true);
 
-  } elseif  (!(is_null(json_decode(file_get_contents($createnameurl, false, stream_context_create($arrContextOptions)))))) {
+      usort($toPhp, 'sortBypopulation');
 
-    $createurl =" name";
+    } else{
 
-    $toPhp = json_decode(file_get_contents($createnameurl, false, stream_context_create($arrContextOptions)), true);
+      $createurl =" none found";
 
-    usort($toPhp, 'sortBypopulation'); 
+      $toPhp = null;
 
-  } else{
+    }
 
-    $createurl =" none found";
+  } elseif ($_POST["searchfilter"] == 'code'){
 
-    $toPhp = null;
+    if (!(is_null(json_decode(file_get_contents($createcodeurl, false, stream_context_create($arrContextOptions)))))) {
+
+      $createurl ="";
+
+      $toPhp = json_decode(file_get_contents($createcodeurl, false, stream_context_create($arrContextOptions)), true);
+
+      usort($toPhp, 'sortBypopulation');
+
+    } else{
+
+      $createurl =" none found";
+
+      $toPhp = null;
+
+    } 
 
   }
+
 }
+
  ?>
 
 <!doctype html>
@@ -124,11 +140,11 @@ if( !(empty($_POST["searchCountry"])) ){
 
           <div class="navbar-nav ms-auto">
 
-            <a class="nav-link active" aria-current="page" href="index.php">Home</a>
+            <a class="nav-link" aria-current="page" href="index.php">Home</a>
 
-            <a class="nav-link" href="searchbyfilter.php">Search by Filter</a>
+            <a class="nav-link active" href="searchbyfilter.php">Search by Filter</a>
 
-            <a class="nav-link" href="allcounntries.php">All Countries</a>
+            <a class="nav-link" href="allcountries.php">All Countries</a>
 
           </div>
 
@@ -140,13 +156,35 @@ if( !(empty($_POST["searchCountry"])) ){
 
     <div class="container mt-5">
 
-        <form  action="index.php" method="post">
+        <form  action="searchbyfilter.php" method="post">
 
           <div class="input-group">
 
-            <button type="submit" class="btn btn-outline-primary" type="button" id="button-addon1">Search <i class="fa-solid fa-magnifying-glass"></i></button>
+            <select name="searchfilter" class="form-select" id="inputGroupSelect01" style="max-width:100px;border-color: #0d6efd;margin-right: 1px;" required>
+
+              <?php
+
+                if($_POST["searchfilter"]=="name"){
+
+                  echo '<option value="name" selected>Name</option><option value="code">Code</option>';
+
+                } elseif($_POST["searchfilter"] == "code"){
+
+                  echo '<option value="name">Name</option><option value="code" selected>Code</option>';
+
+                } else {
+
+                  echo '<option value="name" selected>Name</option><option value="code">Code</option>';
+
+                }
+
+              ?>
+
+            </select>
 
             <input value="<?php echo $_POST["searchCountry"]; ?>" name="searchCountry" type="text" class="form-control" placeholder="Enter Country Name or Alpha Code" aria-label="Example text with button addon" aria-describedby="button-addon1" required>
+
+            <button type="submit" class="btn btn-outline-primary" type="button" id="button-addon1"> <i class="fa-solid fa-magnifying-glass"></i></button>
 
           </div>
 
@@ -156,7 +194,7 @@ if( !(empty($_POST["searchCountry"])) ){
 
           <button class="btn btn-link btn-sm ps-0"> Show all Countries</button>
 
-        </form>             
+        </form>        
 
           <?php
 
@@ -200,9 +238,9 @@ if( !(empty($_POST["searchCountry"])) ){
 
     <br>        
 
-        <div  id="info-container">
+          <div  id="info-container">
 
-         <?php
+          <?php
 
             if(!(is_null($toPhp)) && $toPhp != ""){
 
@@ -224,15 +262,15 @@ if( !(empty($_POST["searchCountry"])) ){
 
                 echo '<div class="country-container col-10 col-md-4 exists"><div class="card my-4">';
 
-                echo '<img src="'.$toPhp[$i]['flags']['svg'].'" class="card-img-top" alt="..." >'; 
+                echo '<img src="'.$toPhp[$i]['flags']['svg'].'" class="card-img-top" alt="..." >';
 
-                echo '<div class="card-body"> '; 
+                echo '<div class="card-body"> ';
 
                 echo '<div class="text-center fw-bold">'.$toPhp[$i]['name']['common'].'</div>';
 
                 echo '<div style="font-size: 0.85rem;">';
 
-                echo '<div class="mb-1"><strong>Capital</strong>: ';
+                echo '<div class="mb-1"><strong>Capital</strong>: ';               
 
                 if (is_countable($toPhp[$i]['capital']) && count($toPhp[$i]['capital']) > 0){                
 
@@ -244,9 +282,9 @@ if( !(empty($_POST["searchCountry"])) ){
 
                 }  
 
-                echo '</div>';
+                echo '</div>'; 
 
-                echo '<div class="mb-1"><strong>Region</strong>: '.$toPhp[$i]['region'].'</div>';
+                echo '<div class="mb-1"><strong>Region</strong>: '.$toPhp[$i]['region'].'</div>'; 
 
                 echo '<div class="mb-1"><strong>Subregion</strong>: '.$toPhp[$i]['subregion'].'</div>';
 
@@ -266,7 +304,7 @@ if( !(empty($_POST["searchCountry"])) ){
 
                 echo '<div class="mb-1"><strong>Population</strong>: '.$toPhp[$i]['population'].'</div>';
 
-                echo '<div class="mb-1"><strong>Currencies</strong>: <ul"> '; 
+                echo '<div class="mb-1"><strong>Currencies</strong>: <ul"> ';
 
                 if (is_countable($toPhp[$i]['currencies']) && count($toPhp[$i]['currencies']) > 0){
 
@@ -288,13 +326,15 @@ if( !(empty($_POST["searchCountry"])) ){
 
                         echo '<li>'.$val.' ';
 
-                      }                   
+                      }
 
                     }
 
                   }
 
                 }
+
+ 
 
                 echo '</ul></div>';
 
@@ -305,23 +345,28 @@ if( !(empty($_POST["searchCountry"])) ){
                 echo '</div>';
 
                 echo ' </div></div></div>';
+
+
                 if($page == 50){                
 
                   echo '</div>';
 
                   $page = 0;
-               
+
+                }
+
+ 
+
               }
 
+            } else{
+
+                echo '<div id="no-results-container"><div class="alert alert-warning text-center fw-bold" role="alert">No results to show</div></div>';
+
             }
-          }
-            else {
 
-              echo '<div id="no-results-container"><div class="alert alert-warning text-center fw-bold" role="alert">No results to show</div></div>';
+          ?>         
 
-          }
-
-          ?>
       </div>      
 
     </div>
@@ -351,3 +396,5 @@ if( !(empty($_POST["searchCountry"])) ){
 </body>
 
 </html>
+
+ 

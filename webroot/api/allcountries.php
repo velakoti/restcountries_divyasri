@@ -1,7 +1,5 @@
 <?php
 
- 
-
 $arrContextOptions=array(
 
   "ssl"=>array(
@@ -18,29 +16,19 @@ $arrContextOptions=array(
 
  $toPhp = json_decode($url, true);
 
- 
-
  function sortBypopulation($a, $b) {
 
   return $a['population'] < $b['population'];
 
-}
-
- 
+ } 
 
 usort($toPhp, 'sortBypopulation');
 
- 
-
  ?>
-
- 
 
 <!doctype html>
 
 <html>
-
- 
 
 <head>
 
@@ -64,21 +52,39 @@ usort($toPhp, 'sortBypopulation');
 
 </head>
 
- 
-
 <body>
 
   <div id="fixed-header" class="shadow-sm">
 
-    <nav class="navbar navbar-dark bg-dark shadow">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow">
 
       <div class="container-fluid px-5">
 
         <a class="navbar-brand" href="">
 
-          <span class="fw-bold fs-3">Rest Countries</span> <span class="fs-6"> Search</span>
+          <span class="fw-bold fs-3">Rest Countries</span>
 
         </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+
+          <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+
+          <div class="navbar-nav ms-auto">
+
+            <a class="nav-link" aria-current="page" href="index.php">Home</a>
+
+            <a class="nav-link" href="searchbyfilter.php">Search by Filter</a>
+
+            <a class="nav-link active" href="allcounntries.php">All Countries</a>
+
+          </div>
+
+        </div>
 
       </div>
 
@@ -95,21 +101,10 @@ usort($toPhp, 'sortBypopulation');
             <button type="submit" class="btn btn-outline-primary" type="button" id="button-addon1">Search <i class="fa-solid fa-magnifying-glass"></i></button>
 
             <input value="<?php echo $_POST["searchCountry"]; ?>" name="searchCountry" type="text" class="form-control" placeholder="Enter Country Name or Alpha Code" aria-label="Example text with button addon" aria-describedby="button-addon1" required>
-            <a href="" class="btn btn-outline-secondary" type="button" id="button-addon2"><i class="fa-solid fa-circle-xmark"></i></a>
 
           </div>
 
         </form>
-
-        <!-- <div class="input-group mb-3">
-
-          <span class="input-group-text" id="basic-addon2"><i class="fa-solid fa-magnifying-glass"></i></span>
-
-          <input id="tableSearch" type="text" class="form-control" placeholder="Enter Name or Country Code"
-
-            aria-label="Recipient's username" aria-describedby="basic-addon2">
-
-        </div> -->
 
       </div>
 
@@ -125,11 +120,7 @@ usort($toPhp, 'sortBypopulation');
 
   </div>
 
- 
-
-  <button onclick="topFunction()" id="myBtn" class="btn btn-secondary"><i class="fa-solid fa-arrow-up"></i></button>
-
- 
+  <button onclick="topFunction()" id="myBtn" class="btn btn-secondary"><i class="fa-solid fa-arrow-up"></i></button> 
 
   <div class="container" id="fixed-header-body">
 
@@ -143,15 +134,9 @@ usort($toPhp, 'sortBypopulation');
 
         <div class="container">
 
-         
-
           <div  id="info-container">
 
-         
-
           <?php
-
- 
 
             $page = 0;
 
@@ -169,31 +154,17 @@ usort($toPhp, 'sortBypopulation');
 
               }
 
- 
-
-              echo '<div class="country-container col-10 col-md-4 col-lg-3 exists"><div class="card my-4">';
-
- 
+              echo '<div class="country-container col-10 col-md-4 col-lg-3 exists"><div class="card my-4">'; 
 
               echo '<img src="'.$toPhp[$i]['flags']['svg'].'" class="card-img-top" alt="..." >';
 
- 
-
               echo '<div class="card-body"> ';
-
- 
 
               echo '<div class="text-center fw-bold">'.$toPhp[$i]['name']['common'].'</div>';
 
- 
-
               echo '<div style="font-size: 0.85rem;">';
 
- 
-
               echo '<div class="mb-1"><strong>Capital</strong>: ';
-
-             
 
               if (is_countable($toPhp[$i]['capital']) && count($toPhp[$i]['capital']) > 0){                
 
@@ -207,19 +178,11 @@ usort($toPhp, 'sortBypopulation');
 
               echo '</div>';
 
- 
-
-              echo '<div class="mb-1"><strong>Region</strong>: '.$toPhp[$i]['region'].'</div>';
-
- 
+              echo '<div class="mb-1"><strong>Region</strong>: '.$toPhp[$i]['region'].'</div>'; 
 
               echo '<div class="mb-1"><strong>Subregion</strong>: '.$toPhp[$i]['subregion'].'</div>';
 
- 
-
               echo '<div class="mb-1"><strong>Languages</strong>: <ul  class="horizontal-list">';
-
- 
 
               if (is_countable($toPhp[$i]['languages']) && count($toPhp[$i]['languages']) > 0){                
 
@@ -231,19 +194,11 @@ usort($toPhp, 'sortBypopulation');
 
               }              
 
- 
-
               echo '</ul></div>';
-
- 
 
               echo '<div class="mb-1"><strong>Population</strong>: '.$toPhp[$i]['population'].'</div>';
 
- 
-
-              echo '<div class="mb-1"><strong>Currencies</strong>: <ul"> ';
-
- 
+              echo '<div class="mb-1"><strong>Currencies</strong>: <ul"> '; 
 
               if (is_countable($toPhp[$i]['currencies']) && count($toPhp[$i]['currencies']) > 0){
 
@@ -265,9 +220,7 @@ usort($toPhp, 'sortBypopulation');
 
                       echo '<li>'.$val.' ';
 
-                    }
-
-                   
+                    }                  
 
                   }
 
@@ -275,27 +228,15 @@ usort($toPhp, 'sortBypopulation');
 
               }
 
- 
-
               echo '</ul></div>';
-
- 
 
               echo '<div class="mb-1"><strong>Alpha Code2</strong>: '.$toPhp[$i]['cca2'].'</div>';
 
- 
-
               echo '<div class="mb-1"><strong>Alpha Code3</strong>: '.$toPhp[$i]['cca3'].'</div>';
 
- 
-
-              echo '</div>';
-
- 
+              echo '</div>'; 
 
               echo ' </div></div></div>';
-
- 
 
               if($page == 50){                
 
@@ -313,7 +254,7 @@ usort($toPhp, 'sortBypopulation');
 
       </div>
 
-      <div class="no-results-container">
+      <div id="no-results-container">
 
         <div class="alert alert-warning text-center fw-bold" role="alert">
 
@@ -327,18 +268,11 @@ usort($toPhp, 'sortBypopulation');
 
   </div>
 
- 
-
-     
-
     </div>
 
   </div>
 
 </div>
-
-
-
 
   <script src=https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js
 
@@ -356,12 +290,10 @@ usort($toPhp, 'sortBypopulation');
 
   <script src=https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js></script>
 
-  <script src=https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>
 
   <script src="../js/app.js"></script>
 
 </body>
-
- 
 
 </html>
